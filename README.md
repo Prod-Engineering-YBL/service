@@ -2,6 +2,32 @@
 Modificare in README.md
 
 
+# 💸 NeverBroke Expense Tracker API
+
+## 📖 Description
+**NeverBroke Expense Tracker API** is a Software-as-a-Service (SaaS) application that exposes RESTful APIs for managing personal expenses and budgets.  
+The system allows users to record daily expenses, organize them into categories, define monthly spending limits, and generate financial reports.
+
+The application focuses on core business logic such as:
+- calculating monthly totals,
+- tracking expenses by category,
+- detecting when a user exceeds their defined budget.
+
+It is implemented using **Java and Spring Boot**, uses a **SQL/NoSQL database** for permanent storage, and is packaged as a **Docker image** for easy deployment.  
+The application is designed to be used by external clients (e.g., Postman, mobile apps, or web frontends) via REST APIs. No graphical user interface is required.
+
+---
+
+## ✨ Main Features
+- User management  
+- Expense CRUD operations  
+- Category management  
+- Monthly budget definition  
+- Budget limit validation  
+- Monthly and per-category reports  
+
+---
+
 # Prerequisites
 
 
