@@ -1,32 +1,42 @@
-# Lab1
-Modificare in README.md
+# NeverBroke Expense Tracker API
 
+## Team
+- **Team Name:** NeverBroke
+- **Members:**
+  - [Member 1 Name] - User & Category Management
+  - [Member 2 Name] - Expense Management
+  - [Member 3 Name] - Budget & Reports
 
-# 💸 NeverBroke Expense Tracker API
+## Project Description
 
-## 📖 Description
-**NeverBroke Expense Tracker API** is a Software-as-a-Service (SaaS) application that exposes RESTful APIs for managing personal expenses and budgets.  
-The system allows users to record daily expenses, organize them into categories, define monthly spending limits, and generate financial reports.
+NeverBroke Expense Tracker API is a Software-as-a-Service (SaaS) application that exposes RESTful APIs for managing personal expenses and budgets. The system allows users to record their daily expenses, organize them into categories, and define monthly spending limits in order to better control their finances.
 
-The application focuses on core business logic such as:
-- calculating monthly totals,
-- tracking expenses by category,
-- detecting when a user exceeds their defined budget.
+The application implements business logic such as calculating monthly totals, aggregating expenses by category, and detecting when a user exceeds their defined budget. It is designed as a backend-only service, intended to be consumed by external clients such as web applications, mobile apps, or API testing tools like Postman. The project focuses on clean API design, data persistence, and containerized deployment.
 
-It is implemented using **Java and Spring Boot**, uses a **SQL/NoSQL database** for permanent storage, and is packaged as a **Docker image** for easy deployment.  
-The application is designed to be used by external clients (e.g., Postman, mobile apps, or web frontends) via REST APIs. No graphical user interface is required.
-
----
-
-## ✨ Main Features
+### Key Features
 - User management  
 - Expense CRUD operations  
 - Category management  
 - Monthly budget definition  
 - Budget limit validation  
-- Monthly and per-category reports  
+- Monthly and per-category financial reports  
 
----
+### Technical Stack
+- **Backend:** Spring Boot (Java 21)
+- **Database:** MongoDB
+- **API:** RESTful
+- **Testing:** JUnit, Mockito, Cucumber
+- **Monitoring:** Prometheus, Grafana
+- **Deployment:** Docker
+
+## Contributing
+
+All team members follow trunk-based development:
+1. Create feature branch from `main`
+2. Make changes and commit with clear messages
+3. Create PR and request review
+4. Address feedback
+5. Merge after approval
 
 # Prerequisites
 
