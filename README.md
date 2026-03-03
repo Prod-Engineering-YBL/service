@@ -3,9 +3,9 @@
 ## Team
 - **Team Name:** NeverBroke
 - **Members:**
-  - [Member 1 Name] - User & Category Management
-  - [Member 2 Name] - Expense Management
-  - [Member 3 Name] - Budget & Reports
+  - Toba Catalin-Gabriel - User & Category Management
+  - Constantin Tudor-Ioan - Expense Management
+  - TBA - Budget & Reports
 
 ## Project Description
 
