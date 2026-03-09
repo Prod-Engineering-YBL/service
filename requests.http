@@ -90,8 +90,41 @@ Content-Type: application/json
 
 
 # ==========================================
+# Category Controller Endpoints
+# ==========================================
+
+### Create a new category (run this after createUser to reuse created user id)
+# @name createCategory
+POST http://localhost:8080/api/categories
+Content-Type: application/json
+
+{
+    "name": "Work",
+    "assignedUserId": "{{createUser.response.body.id}}"
+}
+
+### Get all categories
+GET http://localhost:8080/api/categories
+
+### Get category by ID (uses ID from createCategory response)
+GET http://localhost:8080/api/categories/{{createCategory.response.body.id}}
+
+### Try duplicate category name (should fail with validation/error)
+POST http://localhost:8080/api/categories
+Content-Type: application/json
+
+{
+    "name": "Work",
+    "assignedUserId": "{{createUser.response.body.id}}"
+}
+
+
+# ==========================================
 # Cleanup (run these last)
 # ==========================================
+
+### Delete category
+DELETE http://localhost:8080/api/categories/{{createCategory.response.body.id}}
 
 ### Delete todo
 DELETE http://localhost:8080/api/todos/{{createTodo.response.body.id}}
