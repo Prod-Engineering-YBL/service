@@ -1,4 +1,5 @@
 package ro.unibuc.prodeng.repository;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -7,6 +8,8 @@ import ro.unibuc.prodeng.model.ExpenseEntity;
 
 @Repository
 public interface ExpenseRepository extends MongoRepository<ExpenseEntity, String> {
-    //de adaugat dupa ce se adauga in service
-    
+    List<ExpenseEntity> findByAssignedUserId(String userId);    
+    List<ExpenseEntity> findByAssignedCategoryId(String categoryId);
+    List<ExpenseEntity> findByAssignedUserIdAndDateBetween(String userId, LocalDateTime start, LocalDateTime end);
+
 }
