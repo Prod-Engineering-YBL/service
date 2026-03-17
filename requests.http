@@ -120,8 +120,48 @@ Content-Type: application/json
 
 
 # ==========================================
+# Budget Controller Endpoints
+# ==========================================
+
+### Create a new budget (run this after createUser to reuse created user id)
+# @name createBudget
+POST http://localhost:8080/api/budgets
+Content-Type: application/json
+
+{
+    "assignedUserId": "{{createUser.response.body.id}}",
+    "month": "2026-03",
+    "amount": 1500,
+    "currency": "EUR"
+}
+
+### Get all budgets
+GET http://localhost:8080/api/budgets
+
+### Get budget by ID (uses ID from createBudget response)
+GET http://localhost:8080/api/budgets/{{createBudget.response.body.id}}
+
+### Get budgets by user ID
+GET http://localhost:8080/api/budgets/user/{{createUser.response.body.id}}
+
+### Update budget
+PUT http://localhost:8080/api/budgets/{{createBudget.response.body.id}}
+Content-Type: application/json
+
+{
+    "assignedUserId": "{{createUser.response.body.id}}",
+    "month": "2026-04",
+    "amount": 1800,
+    "currency": "EUR"
+}
+
+
+# ==========================================
 # Cleanup (run these last)
 # ==========================================
+
+### Delete budget
+DELETE http://localhost:8080/api/budgets/{{createBudget.response.body.id}}
 
 ### Delete category
 DELETE http://localhost:8080/api/categories/{{createCategory.response.body.id}}
