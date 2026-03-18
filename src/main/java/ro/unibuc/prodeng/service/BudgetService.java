@@ -1,6 +1,7 @@
 package ro.unibuc.prodeng.service;
 
 import java.util.List;
+import java.util.Comparator;
 
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -68,6 +69,27 @@ public class BudgetService {
             throw new RuntimeException("Budget not found with id: " + id);
         }
         budgetRepository.deleteById(id);
+    }
+
+    public double getTotalAmountByUserId(@NonNull String userId) {
+        return budgetRepository.findByAssignedUserId(userId).stream()
+                .mapToDouble(BudgetEntity::amount)
+                .sum();
+    }
+
+    public double getAverageAmountByUserId(@NonNull String userId) {
+        return budgetRepository.findByAssignedUserId(userId).stream()
+                .mapToDouble(BudgetEntity::amount)
+                .average()
+                .orElse(0.0);
+    }
+
+    public BudgetResponse getHighestBudgetByUserId(@NonNull String userId) {
+        var highest = budgetRepository.findByAssignedUserId(userId).stream()
+                .max(Comparator.comparingDouble(BudgetEntity::amount))
+                .orElseThrow(() -> new RuntimeException("No budgets found for user id: " + userId));
+
+        return toResponse(highest);
     }
 
     private BudgetResponse toResponse(BudgetEntity budget) {

@@ -73,6 +73,18 @@ public class CategoryService {
         return toResponse(category);
     }
 
+    public long getTotalCategoriesCount() {
+        return categoryRepository.count();
+    }
+
+    public long getCategoriesCountByUserId(@NonNull String userId) {
+        return categoryRepository.countByAssignedUserId(userId);
+    }
+
+    public boolean hasAnyCategoryForUserId(@NonNull String userId) {
+        return categoryRepository.findByAssignedUserId(userId).isPresent();
+    }
+
     private CategoryResponse toResponse(CategoryEntity category) {
         return new CategoryResponse(
                 category.id(),
