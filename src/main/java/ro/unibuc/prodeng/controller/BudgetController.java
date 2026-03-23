@@ -35,6 +35,21 @@ public class BudgetController {
         return budgetService.getBudgetsByUserId(userId);
     }
 
+    @GetMapping("/user/{userId}/total-amount")
+    public double getTotalAmountByUserId(@PathVariable @NonNull String userId) {
+        return budgetService.getTotalAmountByUserId(userId);
+    }
+
+    @GetMapping("/user/{userId}/average-amount")
+    public double getAverageAmountByUserId(@PathVariable @NonNull String userId) {
+        return budgetService.getAverageAmountByUserId(userId);
+    }
+
+    @GetMapping("/user/{userId}/highest")
+    public BudgetResponse getHighestBudgetByUserId(@PathVariable @NonNull String userId) {
+        return budgetService.getHighestBudgetByUserId(userId);
+    }
+
     @PostMapping
     public BudgetResponse createBudget(@RequestBody CreateBudgetRequest request) {
         return budgetService.createBudget(request);

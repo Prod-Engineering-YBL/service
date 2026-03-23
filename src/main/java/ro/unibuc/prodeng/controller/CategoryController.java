@@ -29,6 +29,21 @@ public class CategoryController {
         return categoryService.getCategoryById(id);
     }
 
+    @GetMapping("/count")
+    public long getTotalCategoriesCount() {
+        return categoryService.getTotalCategoriesCount();
+    }
+
+    @GetMapping("/user/{userId}/count")
+    public long getCategoriesCountByUserId(@PathVariable @NonNull String userId) {
+        return categoryService.getCategoriesCountByUserId(userId);
+    }
+
+    @GetMapping("/user/{userId}/has-any")
+    public boolean hasAnyCategoryForUserId(@PathVariable @NonNull String userId) {
+        return categoryService.hasAnyCategoryForUserId(userId);
+    }
+
     @PostMapping
     public CategoryResponse createCategory(@RequestBody CreateCategoryRequest request) {
         return categoryService.createCategory(request);

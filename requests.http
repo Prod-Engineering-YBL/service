@@ -136,7 +136,7 @@ Content-Type: application/json
 }
 
 ### Get all budgets
-GET http://localhost:8080/api/budgets
+GET http://localhost:8080/api/budgets/user/{{createUser.response.body.id}}
 
 ### Get budget by ID (uses ID from createBudget response)
 GET http://localhost:8080/api/budgets/{{createBudget.response.body.id}}
