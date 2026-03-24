@@ -156,6 +156,114 @@ Content-Type: application/json
 }
 
 
+
+### Get all expenses
+GET http://localhost:8080/api/expenses
+
+###
+
+### Get expense by id
+GET http://localhost:8080/api/expenses/65f123abc
+
+###
+
+### Create expense 1
+POST http://localhost:8080/api/expenses
+Content-Type: application/json
+
+{
+  "userId": "user1",
+  "categoryId": "food",
+  "amount": 45.5,
+  "description": "KFC",
+  "date": "2026-03-18"
+}
+
+###
+
+### Create expense 2
+POST http://localhost:8080/api/expenses
+Content-Type: application/json
+
+{
+  "userId": "user1",
+  "categoryId": "transport",
+  "amount": 20,
+  "description": "Uber",
+  "date": "2026-03-17"
+}
+
+###
+
+### Create expense 3
+POST http://localhost:8080/api/expenses
+Content-Type: application/json
+
+{
+  "userId": "user1",
+  "categoryId": "entertainment",
+  "amount": 100,
+  "description": "Club",
+  "date": "2026-02-10"
+}
+
+###
+
+### Update expense
+PUT http://localhost:8080/api/expenses/65f123abc
+Content-Type: application/json
+
+{
+  "amount": 60,
+  "description": "KFC + desert"
+}
+
+###
+
+### Delete expense
+DELETE http://localhost:8080/api/expenses/65f123abc
+
+###
+
+### Get expenses by user
+GET http://localhost:8080/api/expenses/user/user1
+
+###
+
+### Get expenses by category
+GET http://localhost:8080/api/expenses/category/food
+
+###
+
+### Monthly total
+GET http://localhost:8080/api/expenses/user/user1/monthly-total?year=2026&month=3
+
+###
+
+### Yearly total
+GET http://localhost:8080/api/expenses/user/user1/yearly-total?year=2026
+
+###
+
+### Total by category
+GET http://localhost:8080/api/expenses/category/food/total
+
+###
+
+### Totals by category
+GET http://localhost:8080/api/expenses/user/user1/totals-by-category
+
+###
+
+### Last N expenses
+GET http://localhost:8080/api/expenses/user/user1/last?n=5
+
+###
+
+### Largest expense
+GET http://localhost:8080/api/expenses/user/user1/largest
+
+###
 # ==========================================
 # Cleanup (run these last)
 # ==========================================
