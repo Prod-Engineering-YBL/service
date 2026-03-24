@@ -9,6 +9,7 @@ import ro.unibuc.prodeng.model.CategoryEntity;
 import ro.unibuc.prodeng.repository.CategoryRepository;
 import ro.unibuc.prodeng.request.CreateCategoryRequest;
 import ro.unibuc.prodeng.response.CategoryResponse;
+import ro.unibuc.prodeng.exception.EntityNotFoundException;
 
 @Service
 public class CategoryService {
@@ -27,7 +28,7 @@ public class CategoryService {
 
     public CategoryResponse getCategoryById(@NonNull String id) {
         var category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(id));
         return toResponse(category);
     }
 
@@ -46,7 +47,7 @@ public class CategoryService {
 
     public CategoryResponse changeName(@NonNull String id, String newName) {
         var existing = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(id));
         var updated = new CategoryEntity(existing.id(), newName, existing.assignedUserId());
         var saved = categoryRepository.save(updated);
         return toResponse(saved);
@@ -54,14 +55,14 @@ public class CategoryService {
 
     public void deleteCategory(@NonNull String id) {
         if (!categoryRepository.existsById(id)) {
-            throw new RuntimeException("Category not found with id: " + id);
+            throw new EntityNotFoundException(id);
         }
         categoryRepository.deleteById(id);
     }
 
     public CategoryResponse assign(@NonNull String id, String userId) {
         var existing = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(id));
         var updated = new CategoryEntity(existing.id(), existing.name(), userId);
         var saved = categoryRepository.save(updated);
         return toResponse(saved);
@@ -69,7 +70,7 @@ public class CategoryService {
 
     public CategoryResponse getCategoryByAssignedUserId(@NonNull String userId) {
         var category = categoryRepository.findByAssignedUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Category not found for user id: " + userId));
+                .orElseThrow(() -> new EntityNotFoundException(userId));
         return toResponse(category);
     }
 
