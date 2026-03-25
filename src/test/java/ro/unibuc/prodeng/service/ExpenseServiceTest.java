@@ -14,8 +14,7 @@ import ro.unibuc.prodeng.exception.EntityNotFoundException;
 
 import ro.unibuc.prodeng.repository.ExpenseRepository;
 import ro.unibuc.prodeng.request.CreateExpenseRequest;
-import ro.unibuc.prodeng.response.ExpenseResponse;
-import ro.unibuc.prodeng.service.ExpenseService;
+
 import ro.unibuc.prodeng.model.ExpenseEntity;
 
 import java.time.LocalDateTime;
@@ -23,11 +22,9 @@ import java.util.*;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -159,6 +156,12 @@ public class ExpenseServiceTest {
 
         assertThrows(IllegalArgumentException.class,
                 () -> expenseService.createExpense(request));
+    }
+
+
+    @Test
+    void shouldReturnAllExpensesByUser() throws Exception{
+        
     }
 
 

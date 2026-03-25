@@ -23,19 +23,21 @@ public class ExpenseService {
         this.expenseRepository = expenseRepository;
     }
 
+    //testat
     public List<ExpenseResponse> getAllExpenses() {
         return expenseRepository.findAll().stream()
                 .map(this::toResponse)
                 .toList();
     }
 
+    //testat
     public ExpenseResponse getExpenseById(@NonNull String id) {
         var expense = expenseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Expense not found with id: " + id));
         return toResponse(expense);
     }
 
-
+    //testat
     public ExpenseResponse createExpense(CreateExpenseRequest request) {
         if (request.amount() == null || request.amount() <= 0) {
             throw new IllegalArgumentException("Amount must be greater than 0");
@@ -47,6 +49,8 @@ public class ExpenseService {
         return toResponse(savedExpense);
 
     }
+
+    //de testat
     public ExpenseResponse updateExpense(@NonNull String id, UpdateExpenseRequest request) {
 
         var existing = expenseRepository.findById(id)
@@ -65,7 +69,7 @@ public class ExpenseService {
 
     }
 
-
+    //de testat
     public void deleteExpense(@NonNull String id) {
 
         if (!expenseRepository.existsById(id)) {
@@ -75,7 +79,7 @@ public class ExpenseService {
         expenseRepository.deleteById(id);
     }
 
-
+    //de testat
     public List<ExpenseResponse> getExpensesByUser(@NonNull String userId) {
         return expenseRepository.findByAssignedUserId(userId)
                 .stream()
@@ -83,7 +87,7 @@ public class ExpenseService {
                 .toList();
     }
 
-
+    //de testat
     public List<ExpenseResponse> getExpensesByCategory(@NonNull String categoryId) {
     return expenseRepository.findByAssignedCategoryId(categoryId)
             .stream()
@@ -92,6 +96,7 @@ public class ExpenseService {
 
     }
 
+    //de testat
     public Float getMonthlyTotal(@NonNull String userId, int year, int month){
 
         LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
@@ -160,6 +165,7 @@ public class ExpenseService {
     }
 
 
+    //testat
     public ExpenseResponse getLargestExpense(String userId) {
 
         ExpenseEntity expense = expenseRepository.findByAssignedUserId(userId)
