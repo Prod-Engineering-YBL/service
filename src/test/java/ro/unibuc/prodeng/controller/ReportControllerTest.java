@@ -94,4 +94,34 @@ class ReportsControllerTest {
         verify(reportService).getReportsByUser("user1");
     }
 
+
+    @Test
+    void shouldGenerateReport() throws Exception {
+        when(reportService.generateReport("user1", 2026, 3)).thenReturn(report1);
+
+        mockMvc.perform(post("/api/reports/generate")
+                        .param("userId", "user1")
+                        .param("year", "2026")
+                        .param("month", "3"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("1"))
+                .andExpect(jsonPath("$.assignedUserId").value("user1"))
+                .andExpect(jsonPath("$.year").value(2026))
+                .andExpect(jsonPath("$.month").value(3))
+                .andExpect(jsonPath("$.totalAmount").value(300.0))
+                .andExpect(jsonPath("$.categoryBreakdown").exists())
+                .andExpect(jsonPath("$.categoryBreakdown['cat1']").value(100.0))
+                .andExpect(jsonPath("$.categoryBreakdown['cat2']").value(200.0));
+
+        verify(reportService).generateReport("user1", 2026, 3);
+    }
+
+    @Test
+    void shouldDeleteReportById() throws Exception {
+        mockMvc.perform(delete("/api/reports/1"))
+                .andExpect(status().isOk());
+
+        verify(reportService).deleteReport("1");
+    }
+
 }
