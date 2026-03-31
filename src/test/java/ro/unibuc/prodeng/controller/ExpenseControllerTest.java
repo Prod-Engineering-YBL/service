@@ -12,11 +12,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import ro.unibuc.prodeng.request.CreateExpenseRequest;
+import ro.unibuc.prodeng.request.UpdateExpenseRequest;
 import ro.unibuc.prodeng.response.ExpenseResponse;
 import ro.unibuc.prodeng.service.ExpenseService;
 
 import java.util.List;
 import java.time.LocalDateTime;
+import java.util.*;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -176,6 +178,56 @@ public class ExpenseControllerTest {
                 .andExpect(jsonPath("$[0].id").value("2"));
 
         verify(expenseService).getLastNExpenses("user1", 1);
+    }
+
+    @Test
+    void shouldReturnTotalsByCategory() throws Exception {
+        var totals = Map.of("category1", 100.0);
+
+        when(expenseService.getTotalsByCategory("user1")).thenReturn(totals);
+
+        mockMvc.perform(get("/api/expenses/user/user1/totals-by-category"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.category1").value(100.0));
+
+        verify(expenseService).getTotalsByCategory("user1");
+    }
+
+
+    @Test
+    void shouldReturnTotalByCategory() throws Exception {
+        when(expenseService.getTotalByCategory("category1")).thenReturn(100f);
+
+        mockMvc.perform(get("/api/expenses/category/category1/total"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("100.0"));
+
+        verify(expenseService).getTotalByCategory("category1");
+    }
+
+    @Test
+    void shouldUpdateExpense() throws Exception {
+        var updateRequest = new UpdateExpenseRequest("Updated description");
+        var updatedResponse = new ExpenseResponse(
+                "1",
+                100F,
+                LocalDateTime.of(2026, 3, 20, 12, 0),
+                "Updated description",
+                "user1",
+                "category1"
+        );
+
+        when(expenseService.updateExpense(any(), any(UpdateExpenseRequest.class)))
+                .thenReturn(updatedResponse);
+
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put("/api/expenses/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.description").value("Updated description"))
+                .andExpect(jsonPath("$.id").value("1"));
+
+        verify(expenseService).updateExpense("1", updateRequest);
     }
 
     

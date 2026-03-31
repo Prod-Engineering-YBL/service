@@ -14,8 +14,7 @@ import ro.unibuc.prodeng.exception.EntityNotFoundException;
 
 import ro.unibuc.prodeng.repository.ExpenseRepository;
 import ro.unibuc.prodeng.request.CreateExpenseRequest;
-import ro.unibuc.prodeng.response.ExpenseResponse;
-import ro.unibuc.prodeng.service.ExpenseService;
+import ro.unibuc.prodeng.request.UpdateExpenseRequest;
 import ro.unibuc.prodeng.model.ExpenseEntity;
 
 import java.time.LocalDateTime;
@@ -23,11 +22,9 @@ import java.util.*;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -107,6 +104,58 @@ public class ExpenseServiceTest {
     }
 
     @Test
+    void shouldThrowWhenCreateExpenseWithNullAmount() {
+        CreateExpenseRequest request = new CreateExpenseRequest(
+                null,
+                LocalDateTime.now(),
+                "Test",
+                "user1",
+                "cat1"
+        );
+
+        assertThrows(IllegalArgumentException.class,
+                () -> expenseService.createExpense(request));
+    }
+
+    @Test
+    void shouldUpdateExpenseDescription() {
+        UpdateExpenseRequest request = new UpdateExpenseRequest("Updated Food");
+
+        ExpenseEntity updatedExpense = new ExpenseEntity(
+                "1",
+                expense1.amount(),
+                expense1.date(),
+                request.description(),
+                expense1.assignedUserId(),
+                expense1.assignedCategoryId()
+        );
+
+        when(expenseRepository.findById("1")).thenReturn(Optional.of(expense1));
+        when(expenseRepository.save(any(ExpenseEntity.class))).thenReturn(updatedExpense);
+
+        var result = expenseService.updateExpense("1", request);
+
+        assertEquals("Updated Food", result.description());
+        assertEquals("1", result.id());
+        verify(expenseRepository).findById("1");
+        verify(expenseRepository).save(any(ExpenseEntity.class));
+    }
+
+    @Test
+    void shouldReturnExpensesByCategory() {
+        when(expenseRepository.findByAssignedCategoryId("cat1"))
+                .thenReturn(List.of(expense1));
+
+        var result = expenseService.getExpensesByCategory("cat1");
+
+        assertEquals(1, result.size());
+        assertEquals("1", result.get(0).id());
+        verify(expenseRepository).findByAssignedCategoryId("cat1");
+    }
+
+
+
+    @Test
     void shouldReturnLargestExpense() {
         when(expenseRepository.findByAssignedUserId("user1"))
                 .thenReturn(List.of(expense1, expense2));
@@ -114,6 +163,28 @@ public class ExpenseServiceTest {
         var result = expenseService.getLargestExpense("user1");
 
         assertEquals("2", result.id());
+    }
+
+    @Test
+    void shouldThrowWhenNoExpensesForLargestExpense() {
+        when(expenseRepository.findByAssignedUserId("user1"))
+                .thenReturn(List.of());
+
+        assertThrows(RuntimeException.class,
+                () -> expenseService.getLargestExpense("user1"));
+    }
+
+    @Test
+    void shouldReturnExpensesByUser() throws Exception {
+        when(expenseRepository.findByAssignedUserId("user1"))
+                .thenReturn(List.of(expense1, expense2));
+
+        var result = expenseService.getExpensesByUser("user1");
+
+        assertEquals(2, result.size());
+        assertEquals("1", result.get(0).id());
+        assertEquals("2", result.get(1).id());
+        verify(expenseRepository).findByAssignedUserId("user1");
     }
 
     @Test
@@ -137,6 +208,57 @@ public class ExpenseServiceTest {
 
         assertEquals(300f, result);
     }
+    @Test
+    void shouldCalculateYearlyTotal() {
+        when(expenseRepository.findByAssignedUserIdAndDateBetween(
+                eq("user1"), any(), any()))
+                .thenReturn(List.of(expense1, expense2));
+
+        Float result = expenseService.getYearlyTotal("user1", 2026);
+
+        assertEquals(300f, result);
+    }
+
+    @Test
+    void shouldCalculateTotalByCategory() {
+        when(expenseRepository.findByAssignedCategoryId("cat1"))
+                .thenReturn(List.of(expense1));
+
+        Float result = expenseService.getTotalByCategory("cat1");
+
+        assertEquals(100f, result);
+    }
+
+
+    @Test
+    void shouldCalculateMonthlyCategoryTotal() {
+        ExpenseEntity expense3 = new ExpenseEntity(
+                "3",
+                300f,
+                LocalDateTime.of(2026, 4, 1, 12, 0),
+                "Other",
+                "user1",
+                "cat1"
+        );
+
+        when(expenseRepository.findByAssignedCategoryId("cat1"))
+                .thenReturn(List.of(expense1, expense3));
+
+        Float result = expenseService.getMonthlyCategoryTotal("cat1", 2026, 3);
+
+        assertEquals(100f, result);
+    }
+
+    @Test
+    void shouldReturnLastNExpenses() {
+        when(expenseRepository.findByAssignedUserId("user1"))
+                .thenReturn(List.of(expense1, expense2));
+
+        var result = expenseService.getLastNExpenses("user1", 1);
+
+        assertEquals(1, result.size());
+        assertEquals("2", result.get(0).id());
+    }
     
     @Test
     void shouldDeleteExpense() {
@@ -145,6 +267,15 @@ public class ExpenseServiceTest {
         expenseService.deleteExpense("1");
 
         verify(expenseRepository).deleteById("1");
+    }
+
+
+    @Test
+    void shouldThrowWhenDeletingNonExistingExpense() {
+        when(expenseRepository.existsById("3")).thenReturn(false);
+
+        assertThrows(RuntimeException.class, () -> expenseService.deleteExpense("3"));
+        verify(expenseRepository).existsById("3");
     }
 
     @Test
@@ -162,5 +293,19 @@ public class ExpenseServiceTest {
     }
 
 
-    
+    @Test
+    void shouldThrowWhenExpenseNotFoundById() {
+        when(expenseRepository.findById("missing")).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> expenseService.getExpenseById("missing"));
+    }
+
+    @Test
+    void shouldThrowWhenUpdatingNonExistingExpense() {
+        when(expenseRepository.findById("missing")).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class,
+                () -> expenseService.updateExpense("missing", new UpdateExpenseRequest("Updated")));
+    }
+
 }

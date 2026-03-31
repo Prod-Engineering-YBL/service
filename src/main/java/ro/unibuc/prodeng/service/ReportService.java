@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.mongodb.lang.NonNull;
 
@@ -26,13 +27,13 @@ public class ReportService {
         this.reportRepository = reportRepository;
     }
 
-    public ReportResponse getReportById(@NonNull String id) {
+    public ReportResponse getReportById(@PathVariable @NonNull String id) {
         var expense = reportRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Report not found with id: " + id));
         return toResponse(expense);
     }
 
-    public List<ReportResponse> getReportsByUser(@NonNull String userId) {
+    public List<ReportResponse> getReportsByUser(@PathVariable @NonNull String userId) {
         return reportRepository.findByAssignedUserId(userId)
                 .stream()
                 .map(this::toResponse)
@@ -40,14 +41,14 @@ public class ReportService {
     }
 
 
-    public void deleteReport(@NonNull String id) {
+    public void deleteReport(@PathVariable @NonNull String id) {
         if (!reportRepository.existsById(id)) {
             throw new RuntimeException("Report not found");
         }
         reportRepository.deleteById(id);
     }
 
-public ReportResponse generateReport(@NonNull String userId, int year, int month) {
+public ReportResponse generateReport(@PathVariable @NonNull String userId, int year, int month) {
         
         LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
         LocalDateTime end = start.plusMonths(1);
