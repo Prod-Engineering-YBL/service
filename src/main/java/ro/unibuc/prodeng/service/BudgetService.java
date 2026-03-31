@@ -6,6 +6,7 @@ import java.util.Comparator;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+import ro.unibuc.prodeng.exception.EntityNotFoundException;
 import ro.unibuc.prodeng.model.BudgetEntity;
 import ro.unibuc.prodeng.repository.BudgetRepository;
 import ro.unibuc.prodeng.request.CreateBudgetRequest;
@@ -28,7 +29,7 @@ public class BudgetService {
 
     public BudgetResponse getBudgetById(@NonNull String id) {
         var budget = budgetRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Budget not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Budget with id: " + id));
         return toResponse(budget);
     }
 
@@ -52,7 +53,7 @@ public class BudgetService {
 
     public BudgetResponse updateBudget(@NonNull String id, CreateBudgetRequest request) {
         var existing = budgetRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Budget not found with id: " + id));
+            .orElseThrow(() -> new EntityNotFoundException("Budget with id: " + id));
         var updated = new BudgetEntity(
                 existing.id(),
                 request.assignedUserId(),
@@ -66,7 +67,7 @@ public class BudgetService {
 
     public void deleteBudget(@NonNull String id) {
         if (!budgetRepository.existsById(id)) {
-            throw new RuntimeException("Budget not found with id: " + id);
+            throw new EntityNotFoundException("Budget with id: " + id);
         }
         budgetRepository.deleteById(id);
     }
@@ -87,7 +88,7 @@ public class BudgetService {
     public BudgetResponse getHighestBudgetByUserId(@NonNull String userId) {
         var highest = budgetRepository.findByAssignedUserId(userId).stream()
                 .max(Comparator.comparingDouble(BudgetEntity::amount))
-                .orElseThrow(() -> new RuntimeException("No budgets found for user id: " + userId));
+                .orElseThrow(() -> new EntityNotFoundException("Budget for user id: " + userId));
 
         return toResponse(highest);
     }
