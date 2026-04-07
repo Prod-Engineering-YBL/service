@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+import ro.unibuc.prodeng.exception.EntityNotFoundException;
 import ro.unibuc.prodeng.model.ExpenseEntity;
 import ro.unibuc.prodeng.repository.ExpenseRepository;
 import ro.unibuc.prodeng.request.CreateExpenseRequest;
@@ -33,7 +34,7 @@ public class ExpenseService {
     //testat
     public ExpenseResponse getExpenseById(@NonNull String id) {
         var expense = expenseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Expense not found with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(id));
         return toResponse(expense);
     }
 
