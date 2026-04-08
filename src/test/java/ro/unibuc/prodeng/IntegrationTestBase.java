@@ -27,13 +27,13 @@ public abstract class IntegrationTestBase {
         if (System.getenv("MONGODB_CONECTION_URL") == null) {
             mongoDBContainer.start();
         }
-    }//asd
+    }
 
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry registry) {
         if (mongoDBContainer.isRunning()) {
             String mongoUrl = "mongodb://localhost:" + mongoDBContainer.getMappedPort(27017);
             registry.add("mongodb.connection.url", () -> mongoUrl);
-            }
+        }
     }
 }
