@@ -50,16 +50,16 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t ${DOCKER_HUB_USERNAME}/prod-eng-img:${env.IMAGE_TAG} ."
+                sh 'docker build -t $DOCKER_HUB_USERNAME/prod-eng-img:$IMAGE_TAG .'
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
-                sh """
-                    echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_HUB_USERNAME} --password-stdin
-                    docker push ${DOCKER_HUB_USERNAME}/prod-eng-img:${env.IMAGE_TAG}
-                """
+                sh '''
+                    echo $DOCKER_PASSWORD_PSW | docker login -u $DOCKER_HUB_USERNAME --password-stdin
+                    docker push $DOCKER_HUB_USERNAME/prod-eng-img:$IMAGE_TAG
+                '''
             }
         }
 
@@ -73,23 +73,23 @@ pipeline {
                     sh """
                         PROD_ENG_IMAGE=${DOCKER_HUB_USERNAME}/prod-eng-img:${env.IMAGE_TAG} docker compose up -d prod-eng mongo
                     """
-                    sleep 100
+                    sleep 30
                 }
             }
         }
 
         stage('Integration Tests') {
             steps {
-                sh 'MONGODB_CONECTION_URL=mongodb://root:example@host.docker.internal:27017 ./gradlew testIT'
+                sh 'MONGODB_CONNECTION_URL=mongodb://root:example@host.docker.internal:27017 ./gradlew testIT'
             }
         }
 
         stage('Tag Release') {
             steps {
-                sh """
-                    git tag ${env.IMAGE_TAG}
-                    git push https://${GITHUB_TOKEN}@github.com/NeverBroke_API/service.git ${env.IMAGE_TAG}
-                """
+                sh '''
+                    git tag $IMAGE_TAG
+                    git push https://$GITHUB_TOKEN_PSW@github.com/Prod-Engineering-YBL/NeverBroke_API.git $IMAGE_TAG
+                '''
             }
         }
     }
