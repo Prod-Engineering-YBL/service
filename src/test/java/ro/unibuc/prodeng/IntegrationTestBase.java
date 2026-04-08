@@ -27,7 +27,7 @@ public abstract class IntegrationTestBase {
         if (System.getenv("MONGODB_CONECTION_URL") == null) {
             mongoDBContainer.start();
         }
-    }
+    }//asd
 
     @DynamicPropertySource
     static void setProperties(DynamicPropertyRegistry registry) {
