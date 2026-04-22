@@ -24,8 +24,10 @@ public abstract class IntegrationTestBase {
                     .withLabel("ro.unibuc.prodeng", "integration-test-mongo");
 
     static {
-        if (System.getenv("MONGODB_CONECTION_URL") == null) {
+        if (System.getenv("MONGODB_CONNECTION_URL") == null) {
+            System.out.println("SE executa START");
             mongoDBContainer.start();
+
         }
     }
 
