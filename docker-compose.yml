@@ -1,13 +1,14 @@
 services:
   prod-eng:
-    image: ${PROD_ENG_IMAGE:-prod-eng-img}
+    # image: ${PROD_ENG_IMAGE:-prod-eng-img}
+    build: .
     ports:
       - 8080:8080
       # Port for debug
       - 5005:5005
     environment:
       ENVIRONMENT_NAME: local
-      MONGODB_CONECTION_URL: mongodb://root:example@mongo:27017/
+      MONGODB_CONNECTION_URL: mongodb://root:example@mongo:27017/
     restart: always
     profiles:
       - "prod-eng-service"

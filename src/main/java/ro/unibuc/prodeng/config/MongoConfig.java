@@ -5,6 +5,7 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.NonNull;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 
@@ -18,12 +19,13 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
     private String connectionURL;
 
     @Override
-    protected String getDatabaseName() {
+    protected @NonNull String getDatabaseName() {
         return "test";
     }
 
     @Override
-    public MongoClient mongoClient() {
+    @SuppressWarnings("null")
+    public @NonNull MongoClient mongoClient() {
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
                 .applyConnectionString(new ConnectionString(connectionURL))
                 .build();
@@ -32,7 +34,8 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
     }
 
     @Override
-    public Collection<String> getMappingBasePackages() {
+    @SuppressWarnings("null")
+    public @NonNull Collection<String> getMappingBasePackages() {
         return Collections.singleton("ro.unibuc.prodeng.model");
     }
 }

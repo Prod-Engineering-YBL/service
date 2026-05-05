@@ -10,10 +10,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import ro.unibuc.prodeng.exception.EntityNotFoundException;
 import ro.unibuc.prodeng.request.CreateBudgetRequest;
 import ro.unibuc.prodeng.response.BudgetResponse;
 import ro.unibuc.prodeng.service.BudgetService;
+import ro.unibuc.prodeng.service.BudgetMetricsService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,6 +44,9 @@ public class BudgetControllerTest {
 	@Mock
 	private BudgetService budgetService;
 
+	@Mock
+	private BudgetMetricsService metricsService;
+
 	@InjectMocks
 	private BudgetController budgetController;
 
@@ -51,10 +57,12 @@ public class BudgetControllerTest {
 	private final BudgetResponse testBudget1 = new BudgetResponse("1", "user-1", "2026-03", 1000.0, "RON");
 	private final BudgetResponse testBudget2 = new BudgetResponse("2", "user-1", "2026-04", 1200.0, "RON");
 	private final CreateBudgetRequest createBudgetRequest = new CreateBudgetRequest("user-1", "2026-03", 1000.0, "RON");
+	private final Timer.Sample timerSample = Timer.start(new SimpleMeterRegistry());
 
 	@BeforeEach
 	void setUp() {
 		mockMvc = MockMvcBuilders.standaloneSetup(budgetController).build();
+		when(metricsService.startBudgetTimer()).thenReturn(timerSample);
 	}
 
 	@Test

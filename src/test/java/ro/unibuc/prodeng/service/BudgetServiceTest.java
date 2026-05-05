@@ -23,6 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
+@SuppressWarnings("null")
 public class BudgetServiceTest {
 
 	@Mock
