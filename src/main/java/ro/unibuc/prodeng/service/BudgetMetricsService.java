@@ -14,6 +14,7 @@ public class BudgetMetricsService {
 
 	private final MeterRegistry registry;
 	private final Counter budgetsCreatedCounter;
+	private final Timer budgetOperationTimer;
 	private final AtomicInteger activeDbConnections = new AtomicInteger(0);
 	private final AtomicInteger budgetsInSystem = new AtomicInteger(0);
 
@@ -22,6 +23,11 @@ public class BudgetMetricsService {
 		this.budgetsCreatedCounter = Counter.builder("app_budgets_created_total")
 				.description("Total number of budgets created")
 				.tag("type", "business")
+				.register(registry);
+
+		this.budgetOperationTimer = Timer.builder("app_request_duration_seconds")
+				.description("Time taken to process budget API operations")
+				.tag("service", "budget")
 				.register(registry);
 
 		Gauge.builder("app_db_connections_active", activeDbConnections, AtomicInteger::get)
@@ -76,10 +82,6 @@ public class BudgetMetricsService {
 	}
 
 	public void stopBudgetTimer(Timer.Sample sample, String operation) {
-		sample.stop(Timer.builder("app_request_duration_seconds")
-				.description("Time taken to process budget API operations")
-				.tag("service", "budget")
-				.tag("operation", operation)
-				.register(registry));
+		sample.stop(budgetOperationTimer);
 	}
 }
